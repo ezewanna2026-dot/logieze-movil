@@ -16,7 +16,7 @@ version = 1.0
 # Dependencias Python
 # python3, kivy y kivymd son la base
 # requests + certifi + urllib3 para las llamadas HTTP
-requirements = python3==3.11.6,kivy==2.2.1,kivymd==1.1.1,requests,certifi,urllib3,charset-normalizer,idna
+requirements = kivy==2.2.1,kivymd==1.1.1,requests,certifi,urllib3,charset-normalizer,idna
 
 # Permisos Android
 android.permissions = INTERNET,ACCESS_NETWORK_STATE

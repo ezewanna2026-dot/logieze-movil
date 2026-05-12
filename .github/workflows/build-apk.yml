@@ -3,7 +3,7 @@ name: Build APK LOGIEZE Movil
 on:
   push:
     branches: [ main, master ]
-  workflow_dispatch:   # boton "Run workflow" manual en GitHub
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,6 +17,13 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+
+    - name: Fijar python3 a la version 3.11
+      run: |
+        PYPATH=$(which python3)
+        sudo update-alternatives --install /usr/bin/python3 python3 "$PYPATH" 100
+        sudo update-alternatives --set python3 "$PYPATH"
+        echo "python3 es ahora: $(python3 --version)"
 
     - name: Cache buildozer (Android SDK/NDK)
       uses: actions/cache@v4
@@ -34,13 +41,12 @@ jobs:
           zlib1g-dev libncurses5-dev libncursesw5-dev \
           cmake libffi-dev libssl-dev
 
-    - name: Instalar buildozer y cython
-      run: pip install buildozer==1.5.0 cython==0.29.33
-
     - name: Aceptar licencias Android SDK
       run: |
-        yes | sudo $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses 2>/dev/null || true
-        yes | sudo $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0" 2>/dev/null || true
+        yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses 2>/dev/null || true
+
+    - name: Instalar buildozer y cython
+      run: pip install buildozer==1.5.0 cython==0.29.33
 
     - name: Compilar APK
       working-directory: app_movil
