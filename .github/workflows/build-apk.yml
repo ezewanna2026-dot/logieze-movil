@@ -37,9 +37,14 @@ jobs:
     - name: Instalar buildozer y cython
       run: pip install buildozer==1.5.0 cython==0.29.33
 
+    - name: Aceptar licencias Android SDK
+      run: |
+        yes | sudo $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses 2>/dev/null || true
+        yes | sudo $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0" 2>/dev/null || true
+
     - name: Compilar APK
       working-directory: app_movil
-      run: buildozer -v android debug
+      run: yes | buildozer -v android debug
 
     - name: Subir APK como artefacto
       uses: actions/upload-artifact@v4
