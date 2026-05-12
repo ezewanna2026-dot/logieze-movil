@@ -1,0 +1,8 @@
+# Dependencias para probar la app en desktop (Windows/Mac/Linux)
+# Instalar con: pip install -r requirements.txt
+
+kivy>=2.2.1
+kivymd>=1.1.1
+requests>=2.28.0
+certifi
+urllib3
