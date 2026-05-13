@@ -41,6 +41,9 @@ fullscreen = 0
 
 log_level = 2
 
+# Receta local para forzar hostpython3 a Python 3.11.9 (Python 3.14 no tiene modulo cgi, Cython 0.29 lo necesita)
+p4a.local_recipes = ./p4a_recipes
+
 [buildozer]
 log_level = 2
 warn_on_root = 1

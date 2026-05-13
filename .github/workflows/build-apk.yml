@@ -17,8 +17,8 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.buildozer
-        key: buildozer-docker-${{ runner.os }}-v10-${{ hashFiles('app_movil/buildozer.spec') }}
-        restore-keys: buildozer-docker-${{ runner.os }}-v10-
+        key: buildozer-docker-${{ runner.os }}-v11-${{ hashFiles('app_movil/buildozer.spec') }}
+        restore-keys: buildozer-docker-${{ runner.os }}-v11-
 
     - name: Compilar APK (Docker kivy/buildozer)
       run: |
@@ -28,7 +28,7 @@ jobs:
           -v "${{ github.workspace }}:/home/user/hostcwd" \
           -v "$HOME/.buildozer:/home/user/.buildozer" \
           kivy/buildozer:latest \
-          -c "echo '=== p4a en venv ===' && find /home/user/.venv -name 'pythonforandroid' -type d 2>/dev/null | head -5 && /home/user/.venv/bin/pip show python-for-android 2>/dev/null | head -5 && echo '=== Parcheando hostpython3 ===' && /home/user/.venv/bin/python3 /home/user/hostcwd/patch_build.py && echo '=== Compilando APK ===' && cd /home/user/hostcwd/app_movil && yes | buildozer -v android debug"
+          -c "cd /home/user/hostcwd/app_movil && yes | buildozer -v android debug"
         sudo chown -R "$(id -u):$(id -g)" "${{ github.workspace }}/app_movil/" 2>/dev/null || true
 
     - name: Subir APK como artefacto
