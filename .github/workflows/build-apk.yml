@@ -24,10 +24,11 @@ jobs:
       run: |
         mkdir -p ~/.buildozer
         docker run --rm \
+          --entrypoint /bin/bash \
           -v "${{ github.workspace }}:/home/user/hostcwd" \
           -v "$HOME/.buildozer:/home/user/.buildozer" \
           kivy/buildozer:latest \
-          bash -c "cd /home/user/hostcwd/app_movil && yes | buildozer -v android debug"
+          -c "cd /home/user/hostcwd/app_movil && yes | buildozer -v android debug"
         sudo chown -R "$(id -u):$(id -g)" "${{ github.workspace }}/app_movil/" 2>/dev/null || true
 
     - name: Subir APK como artefacto
