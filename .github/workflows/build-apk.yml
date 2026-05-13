@@ -40,15 +40,15 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.buildozer
-        key: buildozer-${{ runner.os }}-v2-${{ hashFiles('app_movil/buildozer.spec') }}
-        restore-keys: buildozer-${{ runner.os }}-v2-
+        key: buildozer-${{ runner.os }}-v3-${{ hashFiles('app_movil/buildozer.spec') }}
+        restore-keys: buildozer-${{ runner.os }}-v3-
 
     - name: Aceptar licencias Android SDK
       run: |
         yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses 2>/dev/null || true
 
     - name: Instalar buildozer y cython
-      run: pip install buildozer cython==0.29.37
+      run: pip install buildozer==1.5.0 cython==0.29.37
 
     - name: Compilar APK
       working-directory: app_movil
