@@ -13,7 +13,7 @@ jobs:
     - name: Checkout codigo
       uses: actions/checkout@v4
 
-    - name: Dependencias del sistema
+    - name: Dependencias del sistema (antes de tocar python3)
       run: |
         sudo apt-get update -qq
         sudo apt-get install -y --no-install-recommends \
@@ -26,6 +26,14 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+
+    - name: Fijar python3 al 3.11 instalado
+      run: |
+        PYPATH=$(which python3)
+        echo "Usando: $PYPATH = $(python3 --version)"
+        sudo update-alternatives --install /usr/bin/python3 python3 "$PYPATH" 100
+        sudo update-alternatives --set python3 "$PYPATH"
+        echo "Verificacion: $(python3 --version)"
 
     - name: Cache buildozer (Android SDK/NDK)
       uses: actions/cache@v4
