@@ -47,8 +47,8 @@ jobs:
       run: |
         yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses 2>/dev/null || true
 
-    - name: Instalar buildozer y cython 3
-      run: pip install buildozer cython==3.0.11
+    - name: Instalar buildozer y cython
+      run: pip install buildozer cython==0.29.37
 
     - name: Compilar APK
       working-directory: app_movil
