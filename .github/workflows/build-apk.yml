@@ -17,8 +17,8 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.buildozer
-        key: buildozer-docker-${{ runner.os }}-v8-${{ hashFiles('app_movil/buildozer.spec') }}
-        restore-keys: buildozer-docker-${{ runner.os }}-v8-
+        key: buildozer-docker-${{ runner.os }}-v9-${{ hashFiles('app_movil/buildozer.spec') }}
+        restore-keys: buildozer-docker-${{ runner.os }}-v9-
 
     - name: Compilar APK (Docker kivy/buildozer)
       run: |
@@ -29,7 +29,7 @@ jobs:
           -v "$HOME/.buildozer:/home/user/.buildozer" \
           kivy/buildozer:latest \
           -c "
-            python3 - <<'PYEOF'
+            /home/user/.venv/bin/python3 - <<'PYEOF'
         import pythonforandroid, os, re
         recipe = os.path.join(os.path.dirname(pythonforandroid.__file__), 'recipes', 'hostpython3', '__init__.py')
         print('Patching:', recipe)
