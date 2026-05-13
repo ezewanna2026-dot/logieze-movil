@@ -13,7 +13,7 @@ jobs:
     - name: Checkout codigo
       uses: actions/checkout@v4
 
-    - name: Dependencias del sistema (antes de tocar python3)
+    - name: Dependencias del sistema
       run: |
         sudo apt-get update -qq
         sudo apt-get install -y --no-install-recommends \
@@ -27,27 +27,28 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Fijar python3 al 3.11 instalado
+    - name: Forzar python3 a 3.11 en todo el sistema
       run: |
-        PYPATH=$(which python3)
-        echo "Usando: $PYPATH = $(python3 --version)"
-        sudo update-alternatives --install /usr/bin/python3 python3 "$PYPATH" 100
-        sudo update-alternatives --set python3 "$PYPATH"
-        echo "Verificacion: $(python3 --version)"
+        P=$(which python3)
+        echo "setup-python: $P = $(python3 --version)"
+        sudo ln -sf "$P" /usr/bin/python3
+        sudo ln -sf "$P" /usr/local/bin/python3
+        hash -r
+        echo "Verificado: $(/usr/bin/python3 --version) | $(/usr/local/bin/python3 --version)"
 
     - name: Cache buildozer (Android SDK/NDK)
       uses: actions/cache@v4
       with:
         path: ~/.buildozer
-        key: buildozer-${{ runner.os }}-${{ hashFiles('app_movil/buildozer.spec') }}
-        restore-keys: buildozer-${{ runner.os }}-
+        key: buildozer-${{ runner.os }}-v2-${{ hashFiles('app_movil/buildozer.spec') }}
+        restore-keys: buildozer-${{ runner.os }}-v2-
 
     - name: Aceptar licencias Android SDK
       run: |
         yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses 2>/dev/null || true
 
-    - name: Instalar buildozer y cython
-      run: pip install buildozer==1.5.0 cython==0.29.33
+    - name: Instalar buildozer y cython 3
+      run: pip install buildozer cython==3.0.11
 
     - name: Compilar APK
       working-directory: app_movil
