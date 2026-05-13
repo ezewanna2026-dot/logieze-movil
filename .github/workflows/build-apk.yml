@@ -13,46 +13,22 @@ jobs:
     - name: Checkout codigo
       uses: actions/checkout@v4
 
-    - name: Dependencias del sistema
-      run: |
-        sudo apt-get update -qq
-        sudo apt-get install -y --no-install-recommends \
-          python3-pip build-essential git zip unzip \
-          openjdk-17-jdk autoconf libtool pkg-config \
-          zlib1g-dev libncurses5-dev libncursesw5-dev \
-          cmake libffi-dev libssl-dev
-
-    - name: Python 3.11
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-
-    - name: Forzar python3 a 3.11 en todo el sistema
-      run: |
-        P=$(which python3)
-        echo "setup-python: $P = $(python3 --version)"
-        sudo ln -sf "$P" /usr/bin/python3
-        sudo ln -sf "$P" /usr/local/bin/python3
-        hash -r
-        echo "Verificado: $(/usr/bin/python3 --version) | $(/usr/local/bin/python3 --version)"
-
     - name: Cache buildozer (Android SDK/NDK)
       uses: actions/cache@v4
       with:
         path: ~/.buildozer
-        key: buildozer-${{ runner.os }}-v6-${{ hashFiles('app_movil/buildozer.spec') }}
-        restore-keys: buildozer-${{ runner.os }}-v6-
+        key: buildozer-docker-${{ runner.os }}-v7-${{ hashFiles('app_movil/buildozer.spec') }}
+        restore-keys: buildozer-docker-${{ runner.os }}-v7-
 
-    - name: Aceptar licencias Android SDK
+    - name: Compilar APK (Docker kivy/buildozer)
       run: |
-        yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses 2>/dev/null || true
-
-    - name: Instalar buildozer y cython
-      run: pip install buildozer==1.4.0 cython==0.29.37
-
-    - name: Compilar APK
-      working-directory: app_movil
-      run: yes | buildozer -v android debug
+        mkdir -p ~/.buildozer
+        docker run --rm \
+          -v "${{ github.workspace }}:/home/user/hostcwd" \
+          -v "$HOME/.buildozer:/home/user/.buildozer" \
+          kivy/buildozer:latest \
+          bash -c "cd /home/user/hostcwd/app_movil && yes | buildozer -v android debug"
+        sudo chown -R "$(id -u):$(id -g)" "${{ github.workspace }}/app_movil/" 2>/dev/null || true
 
     - name: Subir APK como artefacto
       uses: actions/upload-artifact@v4
